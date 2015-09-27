@@ -24,10 +24,11 @@ struct s_proc
     int pipefd[2];
     int num;
     char fifoname[15];
-    char flag; /* in place of a boolean */
+    char isFifo; /* in place of a boolean */
+    char isDone; /* in place of a boolean */
 };
 
-/* This is the header for CS 511 Assignment 1 the primes calculator
+/* This is the header for CS 511 Assignment 1 the primes finder
  */
 int     main(int, char**);
 void    printError(char*);

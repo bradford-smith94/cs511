@@ -19,13 +19,13 @@ int findPrimes(int bottom, int top, struct s_proc proc)
 
 #ifdef DEBUG
     printDebug("[child]\tproc struct:");
-    if (proc.flag)
+    if (proc.isFifo)
         printf("\tfifo: %s\n", proc.fifoname);
     else
         printf("\tpipe: \n");
 #endif
 
-    if (proc.flag)
+    if (proc.isFifo)
     {
         if ((proc.fifofd = open(proc.fifoname, O_WRONLY)) == -1)
             printError("[child]\tcouldn't open fifo");
@@ -63,7 +63,7 @@ int findPrimes(int bottom, int top, struct s_proc proc)
 #endif
 
             sprintf(temp, "%d|", i);
-            if (proc.flag)
+            if (proc.isFifo)
             {
                 /* write to proc.fifoname */
                 if (write(proc.fifofd, temp, strlen(temp)) == -1)
@@ -82,7 +82,7 @@ int findPrimes(int bottom, int top, struct s_proc proc)
     if (retval > top - bottom)
         printError("[child]\t can't count");
 
-    if (proc.flag)
+    if (proc.isFifo)
     {
         if (close(proc.fifofd) == -1)
             printError("[child]\tcouldn't close fifo");

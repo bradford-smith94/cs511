@@ -1,3 +1,5 @@
 *.o
 *.swp
+*.tar.gz
+
 Assignment1/src/primes

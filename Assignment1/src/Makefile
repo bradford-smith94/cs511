@@ -18,7 +18,7 @@ LDFLAGS+=
 # implicit compiling rules:
 # C complied with: `$(CC) -c $(CPPFLAGS) $(CFLAGS)`
 CFLAGS+= $(INCLPATH)
-CPPFLAGS+= -pedantic-errors -Wall
+CPPFLAGS+= -std=c99 -pedantic-errors -Wall
 DBFLGS= -g -DDEBUG
 
 all: $(OBJ)

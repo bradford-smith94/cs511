@@ -1,6 +1,6 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 511 Assignment 2
-# 10/10/2015
+# 10/11/2015
 # "I pledge my honor that I have abided by the Stevens Honor System."
 ################################################################################
 
@@ -10,13 +10,12 @@ T2=transter2
 TARGETS=$(RW) $(T1) $(T2)
 AUTHOR=bsmith8
 PROJECT=cs511-assignment2
-SRC=printError.c printDebug.c
-RWSRC=rw.c
-T1SRC=transfer1.c cbuf.c start_filler.c start_drainer.c
-T2SRC=transter2.c
-RWOBJ=$(RWSRC:.c=.o) $(SRC:.c=.o)
-T1OBJ=$(T1SRC:.c=.o) $(SRC:.c=.o)
-T2OBJ=$(T2SRC:.c=.o) $(SRC:.c=.o)
+RWSRC=rw.c printError.c printDebug.c
+T1SRC=transfer1.c printError.c printDebug.c cbuf.c start_filler.c start_drainer.c
+T2SRC=transter2.c printError.c printDebug.c
+RWOBJ=$(RWSRC:.c=.o)
+T1OBJ=$(T1SRC:.c=.o)
+T2OBJ=$(T2SRC:.c=.o)
 CC=gcc
 RM=rm -f
 INCLPATH=-I../include

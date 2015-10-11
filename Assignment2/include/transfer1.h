@@ -14,6 +14,9 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+#include "cbuf.h"
+#include "utils.h"
+
 struct s_threadArgs
 {
     int waitTime;
@@ -24,7 +27,7 @@ struct s_threadArgs
 sem_t gl_sem;
 
 int     main(int, char**);
-void    start_filler(struct s_threadArgs);
-void    start_drainer(struct s_threadArgs);
+void*   start_filler(void*);
+void*   start_drainer(void*);
 
 #endif /* _TRANSFER1_H_ */

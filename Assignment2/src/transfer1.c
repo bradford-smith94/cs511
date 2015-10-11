@@ -5,8 +5,6 @@
  */
 
 #include "transfer1.h"
-#include "utils.h"
-#include "cbuf.h"
 
 #define usage "[usage]\t ./transfer1 <input file> <output file> <filler wait> <drainer wait>"
 
@@ -16,14 +14,16 @@ int main(int argc, char** argv)
     struct s_threadArgs drainerArgs;
     pthread_t fillerThread;
     pthread_t drainerThread;
-    FILE* outStream;
     char* inFile;
     char* outFile;
     int fillerWait;
     int drainerWait;
 
     if (argc != 5)
+    {
         printf("%s\n", usage);
+        exit(0);
+    }
 
     inFile = argv[1];
     outFile = argv[2];
@@ -42,9 +42,9 @@ int main(int argc, char** argv)
         printError("unable to initialize semaphore");
 
     /* create 2 pthreads for filler and drainer */
-    if (pthread_create(&fillerThread, NULL, (void *) start_filler, (void *) &fillerArgs))
+    if (pthread_create(&fillerThread, NULL, &start_filler, (void *) &fillerArgs))
         printError("could not create filler thread");
-    if (pthread_create(&drainerThread, NULL, (void *) start_drainer, (void *) &drainerArgs))
+    if (pthread_create(&drainerThread, NULL, &start_drainer, (void *) &drainerArgs))
         printError("could not create drainer thread");
 
     /* wait for threads */

@@ -12,9 +12,10 @@
 
 int main(int argc, char** argv)
 {
+    struct s_threadArgs fillerArgs;
+    struct s_threadArgs drainerArgs;
     pthread_t fillerThread;
     pthread_t drainerThread;
-    FILE* inStream;
     FILE* outStream;
     char* inFile;
     char* outFile;
@@ -29,12 +30,21 @@ int main(int argc, char** argv)
     fillerWait = atoi(argv[3]);
     drainerWait = atoi(argv[4]);
 
+    /* setup thread args */
+    fillerArgs.waitTime = fillerWait;
+    fillerArgs.fileName = inFile;
+
+    drainerArgs.waitTime = drainerWait;
+    drainerArgs.fileName = outFile;
+
     cbuf_init();
+    if (sem_init(&gl_sem, 0, 1) == -1)
+        printError("unable to initialize semaphore");
 
     /* create 2 pthreads for filler and drainer */
-    if (pthread_create(&fillerThread, NULL, (void *) start_filler, (void *) &fillerWait))
+    if (pthread_create(&fillerThread, NULL, (void *) start_filler, (void *) &fillerArgs))
         printError("could not create filler thread");
-    if (pthread_create(&drainerThread, NULL, (void *) start_drainer, (void *) &drainerWait))
+    if (pthread_create(&drainerThread, NULL, (void *) start_drainer, (void *) &drainerArgs))
         printError("could not create drainer thread");
 
     /* wait for threads */
@@ -43,8 +53,9 @@ int main(int argc, char** argv)
     if (pthread_join(drainerThread, NULL))
         printError("could not join drainer thread");
 
-    /* clear cbuf */
     cbuf_terminate();
+    if (sem_destroy(&gl_sem) == -1)
+        printError("unable to destroy semaphore");
 
     return 0;
 }

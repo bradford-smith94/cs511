@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 2 start_filler.c
- * 10/11/2015
+ * 10/12/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -49,7 +49,7 @@ void* start_filler(void *input)
             printError("[filler]\tcould not lock semaphore");
 
         /* write line to cbuf */
-        if ((cbuf_copy_in(line)) == n)
+        if ((cbuf_copy_in(line)) == (n + 1))
             printf("fill thread: wrote [%s] into buffer (nwritten=%d)\n",
                     line,
                     n);
@@ -61,6 +61,7 @@ void* start_filler(void *input)
             printError("[filler]\tcould not unlock semaphore");
     }
     free(line);
-
     fclose(inStream);
+
+    return 0;
 }

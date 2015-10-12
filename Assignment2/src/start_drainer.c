@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 2 start_drainer.c
- * 10/11/2015
+ * 10/12/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -60,6 +60,7 @@ void* start_drainer(void *input)
         }
     }
     free(line);
-
     fclose(outStream);
+
+    return 0;
 }

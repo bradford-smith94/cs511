@@ -17,6 +17,9 @@
 #include "cbuf.h"
 #include "utils.h"
 
+/* the message filler and drainer should use to signal quit */
+#define quitWord "QUIT"
+
 struct s_threadArgs
 {
     int waitTime;

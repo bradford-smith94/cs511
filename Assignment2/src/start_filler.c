@@ -14,8 +14,13 @@ void* start_filler(void *input)
     char* line;
     int quit;
     int n;
+    int m;
 
     args = *((struct s_threadArgs*)input);
+#ifdef DEBUG
+    printf("[DEBUG]\t[filler]\targs.waitTime: %d\n", args.waitTime);
+    fflush(stdout);
+#endif
 
     if ((inStream = fopen(args.fileName, "r")) == NULL)
         printError("[filler]\tcould not open input file");
@@ -29,18 +34,24 @@ void* start_filler(void *input)
         n = getline(&line, &size, inStream);
         if (n <= 0)
         {
+            quit = 1;
+            free(line);
+            line = quitWord;
+            n = strlen(line) + 1;
 #ifdef DEBUG
             printDebug("[filler]\tquitting...");
+            printf("\tline: %s, n: %d\n", line, n);
+            fflush(stdout);
 #endif
-            quit = 1;
-            line = "QUIT";
         }
+        else
+            line[n++] = '\0';
 
-        while (cbuf_space_available() < n)
+        while ((m = cbuf_space_available()) < n)
         {
             printf("fill thread: could not write [%s] -- not enough space (%d)\n",
                     line,
-                    n);
+                    m);
             usleep(args.waitTime);
         }
 
@@ -49,7 +60,7 @@ void* start_filler(void *input)
             printError("[filler]\tcould not lock semaphore");
 
         /* write line to cbuf */
-        if ((cbuf_copy_in(line)) == (n + 1))
+        if ((cbuf_copy_in(line)) == n)
             printf("fill thread: wrote [%s] into buffer (nwritten=%d)\n",
                     line,
                     n);
@@ -60,7 +71,6 @@ void* start_filler(void *input)
         if (sem_post(&gl_sem) == -1)
             printError("[filler]\tcould not unlock semaphore");
     }
-    free(line);
     fclose(inStream);
 
     return 0;

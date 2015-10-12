@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 2 transfer1.c
- * 10/10/2015
+ * 10/12/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -40,6 +40,7 @@ int main(int argc, char** argv)
     cbuf_init();
     if (sem_init(&gl_sem, 0, 1) == -1)
         printError("unable to initialize semaphore");
+    printf("buffer size: %d\n", cbuf_space_available());
 
     /* create 2 pthreads for filler and drainer */
     if (pthread_create(&fillerThread, NULL, &start_filler, (void *) &fillerArgs))

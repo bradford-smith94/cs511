@@ -13,8 +13,13 @@ void* start_drainer(void *input)
     char* line;
     int quit;
     int n;
+    int m;
 
     args = *((struct s_threadArgs*)input);
+#ifdef DEBUG
+    printf("[DEBUG]\t[drainer]\targs.waitTime: %d\n", args.waitTime);
+    fflush(stdout);
+#endif
 
     if ((outStream = fopen(args.fileName, "w")) == NULL)
         printError("[drainer]\tcould not open output file");
@@ -23,11 +28,14 @@ void* start_drainer(void *input)
     quit = 0;
     while (!quit)
     {
-        while (!cbuf_data_is_available())
+        while (!(m = cbuf_data_is_available()))
         {
             printf("drain thread: no new string in buffer\n");
             usleep(args.waitTime);
         }
+
+        /* make sure line has enough space */
+        line = realloc(line, m*sizeof(char));
 
         /* lock the semaphore */
         if (sem_wait(&gl_sem) == -1)
@@ -45,7 +53,7 @@ void* start_drainer(void *input)
         if (sem_post(&gl_sem) == -1)
             printError("[drainer]\tcould not unlock semaphore");
 
-        if (!strcmp(line, "QUIT"))
+        if (!strcmp(line, quitWord))
         {
 #ifdef DEBUG
             printDebug("[drainer]\tquitting...");

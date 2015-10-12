@@ -6,6 +6,11 @@
 
 #include "transfer2.h"
 
+/* pre: takes in a void* input (which must be a pointer to type
+ *      struct s_threadArgs)
+ * post: runs the filler thead for transfer2
+ * returns: a 0 (don't try dereferencing it) exits on errors
+ */
 void* start_filler2(void *input)
 {
     struct s_threadArgs args;

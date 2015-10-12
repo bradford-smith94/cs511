@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 2 rw.c
- * 10/10/2015
+ * 10/12/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -9,6 +9,9 @@
 
 #define usage "[usage]\t./rw <input file> <output file>"
 
+/* pre: takes in int argc and char** argv command line arguments
+ * post: runs the rw program
+ */
 int main(int argc, char** argv)
 {
     FILE* inStream;

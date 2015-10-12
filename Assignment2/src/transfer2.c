@@ -8,6 +8,9 @@
 
 #define usage "[usage]\t ./transfer2 <input file> <output file> <filler wait> <drainer wait>"
 
+/* pre: takes in int argc and char** argv command line arguments
+ * post: runs the transfer2 program
+ */
 int main(int argc, char** argv)
 {
     struct s_threadArgs fillerArgs;

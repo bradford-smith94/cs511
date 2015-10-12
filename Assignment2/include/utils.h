@@ -12,7 +12,7 @@
 #include <string.h>
 
 /* This is the header used by all parts of CS 511 Assignment 2, it has global
- * utilities that I like to use
+ * printing utilities that I like to use
  */
 
 void    printError(char*);

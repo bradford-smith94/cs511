@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 2 transfer1.h
- * 10/10/2015
+ * 10/12/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -28,6 +28,8 @@ struct s_threadArgs
 
 /* global semaphore */
 sem_t gl_sem;
+
+/* This is the header file for CS 511 Assignment 2 Part 1: transfer1 */
 
 int     main(int, char**);
 void*   start_filler(void*);

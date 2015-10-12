@@ -10,12 +10,13 @@ T2=transfer2
 TARGETS=$(RW) $(T1) $(T2)
 AUTHOR=bsmith8
 PROJECT=cs511-assignment2
-RWSRC=rw.c printError.c printDebug.c
-T1SRC=transfer1.c printError.c printDebug.c cbuf.c start_filler.c start_drainer.c
-T2SRC=transfer2.c printError.c printDebug.c
-RWOBJ=$(RWSRC:.c=.o)
-T1OBJ=$(T1SRC:.c=.o)
-T2OBJ=$(T2SRC:.c=.o)
+SHAREDSRC=printError.c printDebug.c
+RWSRC=rw.c
+T1SRC=transfer1.c cbuf.c start_filler.c start_drainer.c
+T2SRC=transfer2.c cbuf.c start_filler2.c start_drainer2.c
+RWOBJ=$(RWSRC:.c=.o) $(SHAREDSRC:.c=.o)
+T1OBJ=$(T1SRC:.c=.o) $(SHAREDSRC:.c=.o)
+T2OBJ=$(T2SRC:.c=.o) $(SHAREDSRC:.c=.o)
 CC=gcc
 RM=rm -f
 INCLPATH=-I../include

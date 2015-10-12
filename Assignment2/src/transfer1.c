@@ -48,11 +48,19 @@ int main(int argc, char** argv)
     if (pthread_create(&drainerThread, NULL, &start_drainer, (void *) &drainerArgs))
         printError("could not create drainer thread");
 
+#ifdef DEBUG
+    printDebug("[main]\twaiting for threads...");
+#endif
+
     /* wait for threads */
     if (pthread_join(fillerThread, NULL))
         printError("could not join filler thread");
     if (pthread_join(drainerThread, NULL))
         printError("could not join drainer thread");
+
+#ifdef DEBUG
+    printDebug("[main]\tfreeing memory and quitting...");
+#endif
 
     cbuf_terminate();
     if (sem_destroy(&gl_sem) == -1)

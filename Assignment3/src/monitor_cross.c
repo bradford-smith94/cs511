@@ -8,12 +8,45 @@
 
 void monitor_cross(struct cart_t* cart)
 {
-    /* if the monitor cart is not this cart, we wait */
-    if (gl_mon.cart->num != cart->num)
-        sleep(10);
+    /* get monitor lock */
+    pthread_mutex_lock(&gl_monLock);
 
-    q_cartHasEntered(gl_mon.cart->dir);
+    if (gl_direction == '\0')
+        gl_direction = cart->dir;
+    else
+    {
+        /* wait on direction */
+        switch (cart->dir)
+        {
+            fprintf(stderr, "Cart %i from direction %c must wait before entering intersection\n",
+                    cart->num,
+                    cart->dir);
+            case Q_NORTH:
+                pthread_cond_wait(&gl_northCond, &gl_monLock);
+                break;
+            case Q_SOUTH:
+                pthread_cond_wait(&gl_southCond, &gl_monLock);
+                break;
+            case Q_EAST:
+                pthread_cond_wait(&gl_eastCond, &gl_monLock);
+                break;
+            case Q_WEST:
+                pthread_cond_wait(&gl_westCond, &gl_monLock);
+                break;
+        }
+    }
+    fprintf(stderr, "Cart %i from direction %c allowed to proceed into intersection\n",
+            cart->num,
+            cart->dir);
+    q_cartHasEntered(gl_direction);
 
-    /* it takes a cart 10 seconds to cross the intersection */
+    /* it takes 10 seconds for a cart to cross */
     sleep(10);
+
+    fprintf(stderr, "Cart %i from direction %c crosses intersection\n",
+            cart->num,
+            cart->dir);
+
+    /* drop monitor lock */
+    pthread_mutex_unlock(&gl_monLock);
 }

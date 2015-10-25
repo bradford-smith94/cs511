@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 3 monitor_leave.c
- * 10/24/2015
+ * 10/25/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -8,12 +8,60 @@
 
 void monitor_leave(struct cart_t* cart)
 {
-    /* if the monitor cart is not this cart, we wait */
-    if (gl_mon.cart->num != cart->num)
-        sleep(10);
+    int i;
+    int j;
+    int signalling;
 
-    gl_mon.cart = NULL;
+    /* get monitor lock */
+    pthread_mutex_lock(&gl_monLock);
 
-    /* give up the lock */
-    sem_post(&gl_mon.semLock);
+    fprintf(stderr, "Cart %i from direction %c leaves intersection\n",
+            cart->num,
+            cart->dir);
+
+    /* signal next direction */
+    signalling = 0;
+    for (i = 0; i < 4 && gl_checkOrder[i] != cart->dir; i++);
+    for (j = (i + 1) % 4; j != i && !signalling; j = (j + 1) % 4)
+    {
+        if (q_cartIsWaiting(gl_checkOrder[i]))
+        {
+            signalling = 1;
+            gl_direction = gl_checkOrder[i];
+        }
+    }
+
+    /* if not signalling by the end of loop, check current direction */
+    if (!signalling)
+    {
+        if (q_cartIsWaiting(gl_direction))
+            signalling = 1;
+        else
+            gl_direction = '\0';
+    }
+
+    /*drop monitor lock */
+    pthread_mutex_unlock(&gl_monLock);
+
+    if (signalling)
+    {
+        fprintf(stderr, "Thread for %c signalling thread for %c\n",
+                cart->dir,
+                gl_direction);
+        switch (gl_direction)
+        {
+            case Q_NORTH:
+                pthread_cond_signal(&gl_northCond);
+                break;
+            case Q_SOUTH:
+                pthread_cond_signal(&gl_southCond);
+                break;
+            case Q_EAST:
+                pthread_cond_signal(&gl_eastCond);
+                break;
+            case Q_WEST:
+                pthread_cond_signal(&gl_westCond);
+                break;
+        }
+    }
 }

@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assingment 3 monitor.h
- * 10/24/2015
+ * 10/25/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -11,19 +11,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <semaphore.h>
+#include <pthread.h>
 
 #include "cart.h"
 #include "q.h"
 
-struct monitor_t {
-    char checkOrder[4];
-    struct cart_t* cart;
-    sem_t semLock;
-    char nextDir;
-} gl_mon;
-
-static pthread_mutex_t gl_monLock = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t gl_monLock;
+pthread_cond_t gl_northCond;
+pthread_cond_t gl_southCond;
+pthread_cond_t gl_eastCond;
+pthread_cond_t gl_westCond;
+char gl_direction;
+char gl_checkOrder[4];
 
 void monitor_init();
 void monitor_arrive(struct cart_t*);

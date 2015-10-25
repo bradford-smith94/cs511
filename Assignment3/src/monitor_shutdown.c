@@ -8,4 +8,11 @@
 
 void monitor_shutdown()
 {
+    gl_mon.cart = NULL;
+    gl_mon.nextDir = '\0';
+    if (sem_destroy(&gl_mon.semLock) == -1)
+    {
+        printf("[ERROR]\tcould not destory semaphore\n");
+        exit(5);
+    }
 }

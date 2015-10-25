@@ -7,7 +7,23 @@
 #ifndef _MONITOR_H_
 #define _MONITOR_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <semaphore.h>
+
 #include "cart.h"
+#include "q.h"
+
+struct monitor_t {
+    char checkOrder[4];
+    struct cart_t* cart;
+    sem_t semLock;
+    char nextDir;
+} gl_mon;
+
+static pthread_mutex_t gl_monLock = PTHREAD_MUTEX_INITIALIZER;
 
 void monitor_init();
 void monitor_arrive(struct cart_t*);

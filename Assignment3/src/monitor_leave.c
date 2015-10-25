@@ -8,4 +8,12 @@
 
 void monitor_leave(struct cart_t* cart)
 {
+    /* if the monitor cart is not this cart, we wait */
+    if (gl_mon.cart->num != cart->num)
+        sleep(10);
+
+    gl_mon.cart = NULL;
+
+    /* give up the lock */
+    sem_post(&gl_mon.semLock);
 }

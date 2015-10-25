@@ -8,4 +8,12 @@
 
 void monitor_cross(struct cart_t* cart)
 {
+    /* if the monitor cart is not this cart, we wait */
+    if (gl_mon.cart->num != cart->num)
+        sleep(10);
+
+    q_cartHasEntered(gl_mon.cart->dir);
+
+    /* it takes a cart 10 seconds to cross the intersection */
+    sleep(10);
 }

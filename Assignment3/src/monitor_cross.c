@@ -1,11 +1,14 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 3 monitor_cross.c
- * 10/24/2015
+ * 10/26/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
 #include "monitor.h"
 
+/* pre: monitor has been initialized, takes in a struct cart_t* cart
+ * post: waits (if necessary) then moves cart through the intersection
+ */
 void monitor_cross(struct cart_t* cart)
 {
     /* get monitor lock */
@@ -39,10 +42,17 @@ void monitor_cross(struct cart_t* cart)
             cart->num,
             cart->dir);
 
+    /* update q that this cart is no longer waiting */
     q_cartHasEntered(gl_direction);
+
+    /* drop lock while sleeping so other threads can work */
+    pthread_mutex_unlock(&gl_monLock);
 
     /* it takes 10 seconds for a cart to cross */
     sleep(10);
+
+    /* get lock again to print */
+    pthread_mutex_lock(&gl_monLock);
 
     fprintf(stderr, "[Cart]\tCart %i from direction %c crosses intersection\n",
             cart->num,

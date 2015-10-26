@@ -7,23 +7,28 @@
 #ifndef _MONITOR_H_
 #define _MONITOR_H_
 
+/* C things */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
 
+/* my things */
 #include "cart.h"
 #include "q.h"
 
-pthread_mutex_t gl_monLock;
-pthread_cond_t gl_northCond;
-pthread_cond_t gl_southCond;
-pthread_cond_t gl_eastCond;
-pthread_cond_t gl_westCond;
-char gl_direction;
-char gl_checkOrder[4];
+/* global monitor variables */
+pthread_mutex_t gl_monLock; /* lock */
+pthread_cond_t gl_northCond; /* condition signalling north is next */
+pthread_cond_t gl_southCond; /* condition signalling south is next */
+pthread_cond_t gl_eastCond; /* condition signalling east is next */
+pthread_cond_t gl_westCond; /* condition signalling west is next */
+char gl_direction; /* the direction currently moving through the intersection */
+char gl_checkOrder[4]; /* the order that directions should be checked for waiting carts */
 
+/* This is the header file for the monitor interface that controlls the
+ * intersection in the Traffic Management program */
 void monitor_init();
 void monitor_arrive(struct cart_t*);
 void monitor_cross(struct cart_t*);

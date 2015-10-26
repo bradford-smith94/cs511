@@ -1,11 +1,15 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 3 monitor_leave.c
- * 10/25/2015
+ * 10/26/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
 #include "monitor.h"
 
+/* pre: monitor has been initialized, takes in a struct cart_t* cart
+ * post: moves cart out of the intersection and finds and signals the next
+ *      direction that it is allowed to enter the intersection
+ */
 void monitor_leave(struct cart_t* cart)
 {
     int i;
@@ -21,13 +25,18 @@ void monitor_leave(struct cart_t* cart)
 
     /* signal next direction */
     signalling = 0;
+
+    /* get i = index of this cart's direction -- note semicolon */
     for (i = 0; i < 4 && gl_checkOrder[i] != cart->dir; i++);
+
+    /* loop along checkOrder */
     for (j = (i + 1) % 4; j != i && !signalling; j = (j + 1) % 4)
     {
-        if (q_cartIsWaiting(gl_checkOrder[i]))
+        /* if there is a cart waiting */
+        if (q_cartIsWaiting(gl_checkOrder[j]))
         {
             signalling = 1;
-            gl_direction = gl_checkOrder[i];
+            gl_direction = gl_checkOrder[j];
         }
     }
 
@@ -40,6 +49,8 @@ void monitor_leave(struct cart_t* cart)
             gl_direction = '\0';
     }
 
+    /* gl_direction has been updated to the direction that needs to be
+     * signalled */
     if (signalling)
     {
         fprintf(stderr, "[Thread]\tThread for %c signalling thread for %c\n",

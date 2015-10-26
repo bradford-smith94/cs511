@@ -6,6 +6,9 @@
 
 #include "monitor.h"
 
+/* pre: none
+ * post: initializes all the global monitor variables
+ */
 void monitor_init()
 {
     /* initialize mutex lock */

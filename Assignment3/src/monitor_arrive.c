@@ -6,6 +6,9 @@
 
 #include "monitor.h"
 
+/* pre: monitor has been initialized, takes in a struct cart_t* cart
+ * post: prints the message that cart has arrived at the intersection
+ */
 void monitor_arrive(struct cart_t* cart)
 {
     /* get monitor lock */

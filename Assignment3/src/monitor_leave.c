@@ -15,7 +15,7 @@ void monitor_leave(struct cart_t* cart)
     /* get monitor lock */
     pthread_mutex_lock(&gl_monLock);
 
-    fprintf(stderr, "Cart %i from direction %c leaves intersection\n",
+    fprintf(stderr, "[Cart]\tCart %i from direction %c leaves intersection\n",
             cart->num,
             cart->dir);
 
@@ -40,12 +40,9 @@ void monitor_leave(struct cart_t* cart)
             gl_direction = '\0';
     }
 
-    /*drop monitor lock */
-    pthread_mutex_unlock(&gl_monLock);
-
     if (signalling)
     {
-        fprintf(stderr, "Thread for %c signalling thread for %c\n",
+        fprintf(stderr, "[Thread]\tThread for %c signalling thread for %c\n",
                 cart->dir,
                 gl_direction);
         switch (gl_direction)
@@ -64,4 +61,7 @@ void monitor_leave(struct cart_t* cart)
                 break;
         }
     }
+
+    /*drop monitor lock */
+    pthread_mutex_unlock(&gl_monLock);
 }

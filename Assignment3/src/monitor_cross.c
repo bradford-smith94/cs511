@@ -18,7 +18,7 @@ void monitor_cross(struct cart_t* cart)
         /* wait on direction */
         switch (cart->dir)
         {
-            fprintf(stderr, "Cart %i from direction %c must wait before entering intersection\n",
+            fprintf(stderr, "[Cart]\tCart %i from direction %c must wait before entering intersection\n",
                     cart->num,
                     cart->dir);
             case Q_NORTH:
@@ -35,15 +35,16 @@ void monitor_cross(struct cart_t* cart)
                 break;
         }
     }
-    fprintf(stderr, "Cart %i from direction %c allowed to proceed into intersection\n",
+    fprintf(stderr, "[Cart]\tCart %i from direction %c allowed to proceed into intersection\n",
             cart->num,
             cart->dir);
+
     q_cartHasEntered(gl_direction);
 
     /* it takes 10 seconds for a cart to cross */
     sleep(10);
 
-    fprintf(stderr, "Cart %i from direction %c crosses intersection\n",
+    fprintf(stderr, "[Cart]\tCart %i from direction %c crosses intersection\n",
             cart->num,
             cart->dir);
 

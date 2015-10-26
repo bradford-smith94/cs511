@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 3 thread_start.c
- * 10/24/2015
+ * 10/25/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -20,12 +20,12 @@ void* thread_start(void* d)
      * causes segmentation fault */
     direction = (char)((unsigned long)d);
 
-    fprintf(stderr, "Thread for direction %c starts\n", direction);
+    fprintf(stderr, "[Thread]\tThread for direction %c starts\n", direction);
     cart = q_getCart(direction);
 
     while (cart != NULL)
     {
-        fprintf(stderr, "Thread for direction %c gets cart %i\n",
+        fprintf(stderr, "[Thread]\tThread for direction %c gets cart %i\n",
                 direction,
                 cart->num);
         monitor_arrive(cart);
@@ -34,7 +34,7 @@ void* thread_start(void* d)
         cart = q_getCart(direction);
     }
 
-    fprintf(stderr, "Thread for direction %c stops\n", direction);
+    fprintf(stderr, "[Thread]\tThread for direction %c stops\n", direction);
 
     return NULL;
 }

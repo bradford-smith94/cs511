@@ -11,7 +11,7 @@ void monitor_arrive(struct cart_t* cart)
     /* get monitor lock */
     pthread_mutex_lock(&gl_monLock);
 
-    fprintf(stderr, "Cart %i arrives at intersection from direction %c\n",
+    fprintf(stderr, "[Cart]\tCart %i arrives at intersection from direction %c\n",
             cart->num,
             cart->dir);
 

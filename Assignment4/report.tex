@@ -1,0 +1,36 @@
+% Bradford Smith (bsmith8)
+% CS 511 Assignment 4 report.tex
+% 11/04/2015
+% "I pledge my honor that I have abided by the Stevens Honor System."
+%===============================================================================
+
+% document global styles
+\documentclass[11pt, letterpaper]{article}
+\usepackage[letterpaper, margin=0.5in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tgbonum} %default font is Tex Gyre Bonum
+\usepackage{textcomp}
+\usepackage{listings} %for formatted code blocks
+\usepackage{color}
+\usepackage{microtype} %tweaks spaces so words break less
+\pagestyle{empty}
+\setlength{\tabcolsep}{0em}
+
+
+% macro functions ==============================================================
+\newcommand{\myheader}[2]
+{\noindent{Bradford Smith (bsmith8)}\\
+    #1 \\
+    #2 \\
+    \textit{``I pledge my honor that I have abided by the Stevens Honor System.''}\\
+}
+
+% simple inline code formatting (use typewriter font)
+\newcommand{\code}[1]{\texttt{#1}}
+%===============================================================================
+
+
+\begin{document}
+\myheader{CS 511 Assignment 4}{11/04/2015}
+\end{document}

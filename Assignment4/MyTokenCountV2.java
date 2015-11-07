@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
- * CS 511 Assignment 4 MyTokenCountV2.java
- * 11/06/2015
+ * CS 511 Assignment 4 MyTokenCountV1.java
+ * 11/07/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -11,17 +11,92 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.ArrayBlockingQueue;
 
 
-public class MyTokenCountV2
+public class MyTokenCountV1
 {
     private static final HashMap<String, Integer> tokenFreq = new HashMap<String, Integer>();
+    private static ArrayBlockingQueue<Page> queue = new ArrayBlockingQueue<Page>(100);
+
+    //https://stackoverflow.com/questions/6463178/is-static-inner-class-thread-safe-inside-another-java-class
+    static class Producer extends Thread
+    {
+        private Integer numPages;
+        private String arg;
+        private ArrayBlockingQueue<Page> queue;
+
+        public Producer(Integer n, String s, ArrayBlockingQueue<Page> q)
+        {
+            this.numPages = n;
+            this.arg = s;
+            this.queue = q;
+        }
+
+        public void run()
+        {
+            //System.out.println("Producer started");
+            Iterable<Page> allPages = new Pages(this.numPages, this.arg);
+            for (Page pg: allPages)
+            {
+                try
+                {
+                    this.queue.put(pg);
+                }
+                catch (Exception e)
+                {
+                    System.out.println("[ERROR]\tCould not put page on queue!");
+                }
+            }
+
+            try
+            {
+                this.queue.put(new PoisonPill());
+            }
+            catch (Exception e)
+            {
+                System.out.println("[ERROR]\tCould not put Poison Pill on queue!");
+            }
+        }
+    }
+
+    static class Consumer extends Thread
+    {
+        private ArrayBlockingQueue<Page> queue;
+        public Consumer(ArrayBlockingQueue<Page> q)
+        {
+            this.queue = q;
+        }
+
+        public void run()
+        {
+            //System.out.println("Consumer started");
+            while (true)
+            {
+                try
+                {
+                    Page pg = queue.take();
+
+                    if (pg.isPoisonPill())
+                        break;
+
+                    Iterable<String> allTokens = new Words(pg.getText());
+                    for (String s: allTokens)
+                        countToken(s);
+                }
+                catch (Exception e)
+                {
+                    System.out.println("[ERROR]\tCould not get page from queue");
+                }
+            }
+        }
+    }
 
     public static void main(String[] args) throws Exception
     {
         if (args.length != 2)
         {
-            System.out.println("usage: java TokenCount number-of-pages XML-file");
+            System.out.println("usage: java MyTokenCountV1 number-of-pages XML-file");
             System.exit(0);
         }
         Integer numPages = Integer.parseInt(args[0]);
@@ -31,15 +106,35 @@ public class MyTokenCountV2
 
         /* begin timed code ... */
         final long before = System.nanoTime();
-        // parse XML into pages
-        Iterable<Page> allPages = new Pages(numPages, args[1]);
+
+        Producer p = new Producer(numPages, args[1], queue);
+        Consumer c = new Consumer(queue);
+
+        // parse XML into pages and put them in queue
+        p.start();
         // on each page, find all tokens then increase the count for each token
-        for (Page pg: allPages)
+        c.start();
+
+        try //try to join producer
         {
-            Iterable<String> allTokens = new Words(pg.getText());
-            for (String s: allTokens)
-                countToken(s);
+            p.join();
+            //System.out.println("Producer joined");
         }
+        catch (Exception e)
+        {
+            System.out.println("[ERROR]\tCould not join producer thread");
+        }
+
+        try //try to join consumer
+        {
+            c.join();
+            //System.out.println("Consumer joined");
+        }
+        catch (Exception e)
+        {
+            System.out.println("[ERROR]\tCould not join consumer thread");
+        }
+
         final long after = System.nanoTime();
         /* ... end  timed code */
 

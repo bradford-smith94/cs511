@@ -48,27 +48,38 @@ public class MyTokenCountV1
                     System.out.println("[ERROR]\tCould not put page on queue!");
                 }
             }
+
+            try
+            {
+                this.queue.put(new PoisonPill());
+            }
+            catch (Exception e)
+            {
+                System.out.println("[ERROR]\tCould not put Poison Pill on queue!");
+            }
         }
     }
 
     static class Consumer extends Thread
     {
-        private Integer numPages;
         private ArrayBlockingQueue<Page> queue;
-        public Consumer(Integer n, ArrayBlockingQueue<Page> q)
+        public Consumer(ArrayBlockingQueue<Page> q)
         {
-            this.numPages = n;
             this.queue = q;
         }
 
         public void run()
         {
             //System.out.println("Consumer started");
-            while (numPages > 0)
+            while (true)
             {
                 try
                 {
                     Page pg = queue.take();
+
+                    if (pg.isPoisonPill())
+                        break;
+
                     Iterable<String> allTokens = new Words(pg.getText());
                     for (String s: allTokens)
                         countToken(s);
@@ -77,7 +88,6 @@ public class MyTokenCountV1
                 {
                     System.out.println("[ERROR]\tCould not get page from queue");
                 }
-                numPages--;
             }
         }
     }
@@ -98,7 +108,7 @@ public class MyTokenCountV1
         final long before = System.nanoTime();
 
         Producer p = new Producer(numPages, args[1], queue);
-        Consumer c = new Consumer(numPages, queue);
+        Consumer c = new Consumer(queue);
 
         // parse XML into pages and put them in queue
         p.start();

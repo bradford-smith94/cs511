@@ -20,7 +20,9 @@ public class MyTokenCountV1
     private static ArrayBlockingQueue<Page> queue = new ArrayBlockingQueue<Page>(100);
 
     //https://stackoverflow.com/questions/6463178/is-static-inner-class-thread-safe-inside-another-java-class
-    static class Producer extends Thread
+
+    //Producer Thread Runnable
+    static class Producer implements Runnable
     {
         private Integer numPages;
         private String arg;
@@ -60,7 +62,8 @@ public class MyTokenCountV1
         }
     }
 
-    static class Consumer extends Thread
+    //Consumer Thread Runnable
+    static class Consumer implements Runnable
     {
         private ArrayBlockingQueue<Page> queue;
         public Consumer(ArrayBlockingQueue<Page> q)
@@ -110,14 +113,17 @@ public class MyTokenCountV1
         Producer p = new Producer(numPages, args[1], queue);
         Consumer c = new Consumer(queue);
 
+        Thread pthread = new Thread(p);
+        Thread cthread = new Thread(c);
+
         // parse XML into pages and put them in queue
-        p.start();
+        pthread.start();
         // on each page, find all tokens then increase the count for each token
-        c.start();
+        cthread.start();
 
         try //try to join producer
         {
-            p.join();
+            pthread.join();
             //System.out.println("Producer joined");
         }
         catch (Exception e)
@@ -127,7 +133,7 @@ public class MyTokenCountV1
 
         try //try to join consumer
         {
-            c.join();
+            cthread.join();
             //System.out.println("Consumer joined");
         }
         catch (Exception e)

@@ -1,5 +1,5 @@
 /* Bradford Smith (bsmith8)
- * CS 511 Assignment 4 MyTokenCountV1.java
+ * CS 511 Assignment 4 MyTokenCountV2.java
  * 11/07/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
@@ -12,15 +12,19 @@ import java.util.Map.Entry;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 
-public class MyTokenCountV1
+public class MyTokenCountV2
 {
     private static final HashMap<String, Integer> tokenFreq = new HashMap<String, Integer>();
     private static ArrayBlockingQueue<Page> queue = new ArrayBlockingQueue<Page>(100);
 
     //https://stackoverflow.com/questions/6463178/is-static-inner-class-thread-safe-inside-another-java-class
-    static class Producer extends Thread
+
+    //Producer Thread Runnable
+    static class Producer implements Runnable
     {
         private Integer numPages;
         private String arg;
@@ -35,6 +39,8 @@ public class MyTokenCountV1
 
         public void run()
         {
+            int numConsumers;
+
             //System.out.println("Producer started");
             Iterable<Page> allPages = new Pages(this.numPages, this.arg);
             for (Page pg: allPages)
@@ -49,18 +55,25 @@ public class MyTokenCountV1
                 }
             }
 
-            try
+            //one poison pill for each consumer
+            numConsumers =Runtime.getRuntime().availableProcessors() - 1;
+            while (numConsumers > 0)
             {
-                this.queue.put(new PoisonPill());
-            }
-            catch (Exception e)
-            {
-                System.out.println("[ERROR]\tCould not put Poison Pill on queue!");
+                try
+                {
+                    this.queue.put(new PoisonPill());
+                }
+                catch (Exception e)
+                {
+                    System.out.println("[ERROR]\tCould not put Poison Pill on queue!");
+                }
+                numConsumers--;
             }
         }
     }
 
-    static class Consumer extends Thread
+    //Consumer Thread Runnable
+    static class Consumer implements Runnable
     {
         private ArrayBlockingQueue<Page> queue;
         public Consumer(ArrayBlockingQueue<Page> q)
@@ -108,16 +121,20 @@ public class MyTokenCountV1
         final long before = System.nanoTime();
 
         Producer p = new Producer(numPages, args[1], queue);
+        ExecutorService pool = Executors.newCachedThreadPool();
         Consumer c = new Consumer(queue);
 
+        Thread pthread = new Thread(p);
+        Thread cthread = new Thread(c);
+
         // parse XML into pages and put them in queue
-        p.start();
+        pthread.start();
         // on each page, find all tokens then increase the count for each token
-        c.start();
+        cthread.start();
 
         try //try to join producer
         {
-            p.join();
+            pthread.join();
             //System.out.println("Producer joined");
         }
         catch (Exception e)
@@ -127,7 +144,7 @@ public class MyTokenCountV1
 
         try //try to join consumer
         {
-            c.join();
+            cthread.join();
             //System.out.println("Consumer joined");
         }
         catch (Exception e)

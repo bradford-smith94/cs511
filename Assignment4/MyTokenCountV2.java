@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class MyTokenCountV2
@@ -83,7 +84,7 @@ public class MyTokenCountV2
 
         public void run()
         {
-            //System.out.println("Consumer started");
+            System.out.println("Consumer started");
             while (true)
             {
                 try
@@ -122,15 +123,14 @@ public class MyTokenCountV2
 
         Producer p = new Producer(numPages, args[1], queue);
         ExecutorService pool = Executors.newCachedThreadPool();
-        Consumer c = new Consumer(queue);
 
         Thread pthread = new Thread(p);
-        Thread cthread = new Thread(c);
 
         // parse XML into pages and put them in queue
         pthread.start();
         // on each page, find all tokens then increase the count for each token
-        cthread.start();
+        for (int i = 0; i < Runtime.getRuntime().availableProcessors() - 1; i++)
+            pool.execute(new Consumer(queue));
 
         try //try to join producer
         {
@@ -141,15 +141,15 @@ public class MyTokenCountV2
         {
             System.out.println("[ERROR]\tCould not join producer thread");
         }
-
-        try //try to join consumer
+        try
         {
-            cthread.join();
-            //System.out.println("Consumer joined");
+            pool.shutdown();
+            pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            System.out.println("Consumer thread pool shutdown");
         }
         catch (Exception e)
         {
-            System.out.println("[ERROR]\tCould not join consumer thread");
+            System.out.println("[ERROR]\tCould not shutdown consumer thread pool");
         }
 
         final long after = System.nanoTime();
@@ -171,7 +171,7 @@ public class MyTokenCountV2
             System.out.println(list.get(i).getKey() + " appears " + list.get(i).getValue() + " times");
     }
 
-    private static void countToken(String tok)
+    private synchronized static void countToken(String tok)
     {
         Integer currentCount = tokenFreq.get(tok);
         if (currentCount == null)

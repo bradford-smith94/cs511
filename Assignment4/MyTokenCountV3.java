@@ -1,10 +1,9 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 4 MyTokenCountV3.java
- * 11/07/2015
+ * 11/08/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
-import java.util.HashMap;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.Map;
@@ -15,11 +14,12 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class MyTokenCountV3
 {
-    private static final HashMap<String, Integer> tokenFreq = new HashMap<String, Integer>();
+    private static final ConcurrentHashMap<String, Integer> tokenFreq = new ConcurrentHashMap<String, Integer>();
     private static ArrayBlockingQueue<Page> queue = new ArrayBlockingQueue<Page>(100);
 
     //https://stackoverflow.com/questions/6463178/is-static-inner-class-thread-safe-inside-another-java-class
@@ -171,7 +171,7 @@ public class MyTokenCountV3
             System.out.println(list.get(i).getKey() + " appears " + list.get(i).getValue() + " times");
     }
 
-    private synchronized static void countToken(String tok)
+    private static void countToken(String tok)
     {
         Integer currentCount = tokenFreq.get(tok);
         if (currentCount == null)

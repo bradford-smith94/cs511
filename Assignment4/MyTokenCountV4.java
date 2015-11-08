@@ -77,6 +77,8 @@ public class MyTokenCountV4
     static class Consumer implements Runnable
     {
         private ArrayBlockingQueue<Page> queue;
+        private ConcurrentHashMap<String, Integer> pMap = new ConcurrentHashMap<String, Integer>();
+
         public Consumer(ArrayBlockingQueue<Page> q)
         {
             this.queue = q;
@@ -96,13 +98,16 @@ public class MyTokenCountV4
 
                     Iterable<String> allTokens = new Words(pg.getText());
                     for (String s: allTokens)
-                        countToken(s);
+                        countToken(s, pMap);
                 }
                 catch (Exception e)
                 {
                     System.out.println("[ERROR]\tCould not get page from queue");
                 }
             }
+
+            //add private map pMap to tokenFreq
+            tokenFreq.putAll(pMap);
         }
     }
 
@@ -171,12 +176,15 @@ public class MyTokenCountV4
             System.out.println(list.get(i).getKey() + " appears " + list.get(i).getValue() + " times");
     }
 
-    private static void countToken(String tok)
+    /* pre: takes in a String tok and ConcurrentHashMap map
+     * post: increments the count for token tok in map
+     */
+    private static void countToken(String tok, ConcurrentHashMap<String, Integer> map)
     {
-        Integer currentCount = tokenFreq.get(tok);
+        Integer currentCount = map.get(tok);
         if (currentCount == null)
-            tokenFreq.put(tok, 1);
+            map.put(tok, 1);
         else
-            tokenFreq.put(tok, currentCount + 1);
+            map.put(tok, currentCount + 1);
     }
 }

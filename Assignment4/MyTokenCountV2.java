@@ -77,6 +77,7 @@ public class MyTokenCountV2
     static class Consumer implements Runnable
     {
         private ArrayBlockingQueue<Page> queue;
+
         public Consumer(ArrayBlockingQueue<Page> q)
         {
             this.queue = q;

@@ -84,7 +84,7 @@ public class MyTokenCountV2
 
         public void run()
         {
-            System.out.println("Consumer started");
+            //System.out.println("Consumer started");
             while (true)
             {
                 try
@@ -118,13 +118,13 @@ public class MyTokenCountV2
         // print number of available processors
         System.out.println(Runtime.getRuntime().availableProcessors() + " available processors");
 
-        /* begin timed code ... */
-        final long before = System.nanoTime();
-
         Producer p = new Producer(numPages, args[1], queue);
         ExecutorService pool = Executors.newCachedThreadPool();
 
         Thread pthread = new Thread(p);
+
+        /* begin timed code ... */
+        final long before = System.nanoTime();
 
         // parse XML into pages and put them in queue
         pthread.start();
@@ -145,7 +145,7 @@ public class MyTokenCountV2
         {
             pool.shutdown();
             pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-            System.out.println("Consumer thread pool shutdown");
+            //System.out.println("Consumer thread pool shutdown");
         }
         catch (Exception e)
         {

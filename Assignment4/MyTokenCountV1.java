@@ -107,14 +107,14 @@ public class MyTokenCountV1
         // print number of available processors
         System.out.println(Runtime.getRuntime().availableProcessors() + " available processors");
 
-        /* begin timed code ... */
-        final long before = System.nanoTime();
-
         Producer p = new Producer(numPages, args[1], queue);
         Consumer c = new Consumer(queue);
 
         Thread pthread = new Thread(p);
         Thread cthread = new Thread(c);
+
+        /* begin timed code ... */
+        final long before = System.nanoTime();
 
         // parse XML into pages and put them in queue
         pthread.start();

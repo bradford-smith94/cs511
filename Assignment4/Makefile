@@ -1,6 +1,6 @@
 # Bradford Smith (bsmith8)
 # Makefile for CS 511 Assignment 4
-# 11/06/2015
+# 11/08/2015
 # "I pledge my honor that I have abided by the Stevens Honor System."
 ################################################################################
 
@@ -36,6 +36,10 @@ v4:
 report:
 	$(TEX) $(REPORT)
 
+report_clean:
+	$(RM) *.aux
+	$(RM) *.log
+
 clean:
 	$(RM) *.swp
 	$(RM) *.aux
@@ -47,6 +51,6 @@ fclean: clean
 
 re: fclean all
 
-tar: fclean
+tar: fclean report report_clean
 	tar -cvzf ../$(AUTHOR)_$(PROJECT).tar.gz ./*
 

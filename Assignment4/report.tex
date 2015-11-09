@@ -1,6 +1,6 @@
 % Bradford Smith (bsmith8)
 % CS 511 Assignment 4 report.tex
-% 11/04/2015
+% 11/08/2015
 % "I pledge my honor that I have abided by the Stevens Honor System."
 %===============================================================================
 
@@ -32,5 +32,37 @@
 
 
 \begin{document}
-\myheader{CS 511 Assignment 4}{11/04/2015}
+\myheader{CS 511 Assignment 4}{11/08/2015}
+
+\bigskip
+\noindent\textbf{Given Version}
+
+The given version was run through 5 trials with using \code{java TokenCount 1000 input.xml} as the input parameters. The results of the 5 trials were: 1879ms, 1794ms, 1845ms, 1837ms and 1653ms. This results in an average runtime of: 1801.6 milliseconds.
+
+\bigskip
+\noindent\textbf{Version 1}
+
+The first version was run through 5 trials with using \code{java MyTokenCountV1 1000 input.xml} as the input parameters. The results of the 5 trials were: 1573ms, 1694ms, 1817ms, 1703ms and 1745ms. This results in an average runtime of: 1706.4 milliseconds.
+
+\bigskip
+\noindent\textbf{Version 2}
+
+The second version was run through 5 trials with using \code{java MyTokenCountV2 1000 input.xml} as the input parameters. The results of the 5 trials were: 2195ms, 2138ms, 2107ms, 2127ms and 2111ms. This results in an average runtime of: 2135.6 milliseconds.
+
+\bigskip
+\noindent\textbf{Version 3}
+
+The third version was run through 5 trials with using \code{java MyTokenCountV3 1000 input.xml} as the input parameters. The results of the 5 trials were: 1004ms, 1176ms, 1027ms, 1114ms and 1416ms. This results in an average runtime of: 1147.4 milliseconds.
+
+\bigskip
+\noindent\textbf{Version 4}
+
+The fourth version was run through 5 trials with using \code{java MyTokenCountV4 1000 input.xml} as the input parameters. The results of the 5 trials were: 1289ms, 1089ms, 1224ms, 1619ms and 1238ms. This results in an average runtime of: 1291.8 milliseconds.
+
+\bigskip
+\noindent\textbf{Conclusions}
+
+All tests were run in the same way, they all used the included \code{input.xml} file, they all parsed 1000 pages and all ran on a test system that had 8 processor cores (including virtual cores). The given version had no threads, the first version had only 1 consumer thread, versions 2, 3 and 4 all ran with 7 consumer threads.
+
+The given version averaged 1801.6 milliseconds. The first version averaged 1706.4 milliseconds, this speedup is due to the introduction of threading, splitting the work between a producer and a consumer thread resulted in a speed increase. The second version averaged 2135.6 milliseconds, although adding more consumer threads should have resulted in a speed increase I believe this version was slowed down by a bottleneck at the shared hashmap, having many threads competing for a shared resource and the overhead of locking and unlocking it resulted in a major slow-down. The third version averaged 1147.4 milliseconds, this version saw the speed increase expected of the second version because the hashmap was turned into a ConcurrentHashMap which only locks individual ``buckets'' at a time so there are few if any threads waiting on the hashmap. Finally the fourth version averaged 1291.8 milliseconds, in this version each consumer thread had it's own ConcurrentHashMap and they were all joined as the threads finished, the process of joining the individual hashmaps into one large one resulted in more overhead than was necessary to solve this problem and therefore a slight increase in time from the third version.
 \end{document}

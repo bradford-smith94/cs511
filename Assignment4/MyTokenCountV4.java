@@ -1,6 +1,6 @@
 /* Bradford Smith (bsmith8)
  * CS 511 Assignment 4 MyTokenCountV4.java
- * 11/08/2015
+ * 11/10/2015
  * "I pledge my honor that I have abided by the Stevens Honor System."
  */
 
@@ -181,10 +181,21 @@ public class MyTokenCountV4
      */
     private static void countToken(String tok, ConcurrentHashMap<String, Integer> map)
     {
-        Integer currentCount = map.get(tok);
-        if (currentCount == null)
-            map.put(tok, 1);
-        else
-            map.put(tok, currentCount + 1);
+        boolean done = false;
+        Integer currentCount;
+        do
+        {
+            currentCount = tokenFreq.get(tok);
+            if (currentCount == null)
+            {
+                Integer x = tokenFreq.putIfAbsent(tok, 1);
+                if (x == null)
+                    done = true;
+            }
+            else
+            {
+                done = tokenFreq.replace(tok, currentCount, currentCount + 1);
+            }
+        } while (!done);
     }
 }

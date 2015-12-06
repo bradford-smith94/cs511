@@ -1,0 +1,12 @@
+process 1, i=1: n changed from 0 to 1
+process 1, i=2: n changed from 1 to 2
+process 1, i=3: n changed from 2 to 3
+process 1, i=4: n changed from 3 to 4
+process 2, i=1: n changed from 0 to 1
+process 2, i=2: n changed from 1 to 2
+process 2, i=3: n changed from 2 to 3
+process 2, i=4: n changed from 3 to 4
+process 1, i=5: n changed from 1 to 2
+process 2, i=5: n changed from 4 to 2
+at end of simulation n = 2
+simulation terminated=assert statement is false,line=33,statement={assert(2 != n)},

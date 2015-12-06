@@ -25,7 +25,7 @@
 
 2c. Erigone output is located at `out/part2-1.txt`
 
-2d. Erigone command:
+2d. Erigone command: `erigone -g -lt100 src/part2.pml > out/part2-2.txt`
 
 2e. Erigone guided simulation output is located at `out/part2-2.txt`
 

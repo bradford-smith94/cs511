@@ -10,7 +10,7 @@
 
 1a. Source is located at `src/part1.pml`
 
-1b. Erigone command:
+1b. Erigone command: `erigone -s -lt20 src/part1.pml > out/part1.txt`
 
 1c. Erigone output is located at `out/part1.txt`
 

@@ -4,3 +4,5 @@
 *.jar
 
 Assignment1/src/primes
+Assignment6/src/*.aut
+Assignment6/src/*.trl

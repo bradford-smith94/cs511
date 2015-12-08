@@ -55,5 +55,7 @@ init {
         run main();
         run main()
     }
-    printf("simulation passed assertion!\n");
+
+    (_nr_pr == 1) ->
+        printf("simulation passed assertion!\n");
 }

@@ -1,6 +1,6 @@
 # Bradford Smith (bsmith8)
 # CS 511 Assignment 6 README.txt
-# 12/06/2015
+# 12/07/2015
 # "I pledge my honor that I have abided by the Stevens Honor System."
 ################################################################################
 
@@ -34,9 +34,9 @@
 | Part 3 |
 +--------+
 
-3a. Source is located at `src/part2.pml`
+3a. Source is located at `src/part3.pml`
 
-3b. Erigone command:
+3b. Erigone command: `erigone -s -lt100 src/part3.pml > out/part3.txt`
 
 3c. Erigone output is located at `out/part3.txt`
 
@@ -47,7 +47,7 @@
 
 4a. Source is located at `src/part4.pml`
 
-4b. Erigone command:
+4b. Erigone command: `erigone -s -lt100 src/part4.pml > out/part4.txt`
 
 4c. Erigone output is located at `out/part4.txt`
 

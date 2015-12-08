@@ -15,9 +15,11 @@ proctype incrementUpToN(byte N) {
     do
     :: i > N -> break
     :: else  ->
-        temp = n;
-        n = temp + 1;
-        printf("process %d, i=%d: n changed from %d to %d\n", _pid, i, temp, n);
+        atomic {
+            temp = n;
+            n = temp + 1;
+            printf("process %d, i=%d: n changed from %d to %d\n", _pid, i, temp, n);
+        }
         i = i + 1
     od
 }
@@ -26,10 +28,10 @@ proctype incrementUpToN(byte N) {
 init {
     n = 0;
     atomic {
-        run incrementUpToN(5)  ;
+        run incrementUpToN(5);
         run incrementUpToN(5)
     }
     (_nr_pr == 1) -> printf("at end of simulation n = %d\n", n);
-    assert(10 != n);
+    assert(10 == n);
     printf("simulation passed assertion!\n");
 }
